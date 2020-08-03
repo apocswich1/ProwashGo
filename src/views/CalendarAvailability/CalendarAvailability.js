@@ -23,6 +23,8 @@ import uuid from 'uuid/v1';
 import axios from 'utils/axios';
 import { Page } from 'components';
 import { AddEditEvent, Toolbar } from './components';
+import { CustomizedProgressBars } from 'components';
+
 import firebase from 'utils/firebase';
 import fechas from 'fechas';
 moment.locale('es');
@@ -101,6 +103,8 @@ const CalendarAvailability = (props) => {
   const [venue, setVenue] = useState([]);
   const [events, setEvents] = useState([]);
   const [washers, setWashers] = useState([]);
+  const [percent, setPercent] = useState(0);
+  const [show, setShow] = useState(false);
   const [eventModal, setEventModal] = useState({
     open: false,
     event: null
@@ -110,6 +114,7 @@ const CalendarAvailability = (props) => {
     let mounted = true;
 
     const fetchData = async () =>{
+      setShow(true);
       try {
         let horasData = [];
 
@@ -119,6 +124,7 @@ const CalendarAvailability = (props) => {
         const sucursal = allSucursal.docs.map(item => item.data());
         
         for(var i = 0; i < sucursal.length; i++){
+          setPercent((i+1)*100/sucursal.length);
           const venues = await firebase.firestore().collection('franchises').doc(props.idfranchise)
         .collection("venues").doc(props.venueID).collection('availabilites').doc(sucursal[i].id)
         .collection("hours").get();
@@ -128,16 +134,17 @@ const CalendarAvailability = (props) => {
             //console.log(sucursal[i].id+' '+venues.docs[j].id+':00');
             var fecha = new String(sucursal[i].id+' '+venues.docs[j].id+':00');
            // console.log(new Date(fecha));
-           console.log(item.data().timestamp.toDate());
+          // console.log(item.data().timestamp.toDate());
          //  console.log(moment(item.data().timestamp).toDate().add(30,'minutes'));
          //id: item.data().name,   
+       //  console.log(item.data().washers);
          horasData.push({
               id: uuid(),
               title: "Disponibilidad",
               color: "#353535",
               start: item.data().timestamp.toDate(),
               end: item.data().timestamp.toDate(),
-              personName: [],
+              personName: item.data().washers,
               desc: "Dispo"
             });
         }
@@ -146,7 +153,9 @@ const CalendarAvailability = (props) => {
       setEvents(horasData);  
         console.log(sucursal);
         console.log(horasData);
+        setShow(false);
       } catch (error) {
+        setShow(false);
         console.log(error);
         console.log('No pudo completar la operación');
       }
@@ -163,7 +172,7 @@ const CalendarAvailability = (props) => {
             mode: 'cors',
           }).then(function (respuesta) {
             respuesta.json().then(body => {
-              setWashers(body.usuarios);
+              setWashers(body.usuarios.filter(item => item.deleted !== true));
             //  console.log(body.usuarios);
             });
           }).catch(function (err) {
@@ -390,6 +399,31 @@ try {
   };
 
   const handleEventEdit = event => {
+    console.log(event);
+    console.log("AQUI LLEGO EL NUEVO:");
+    console.log(event.id);
+    console.log(event.personName);
+    
+var documento = moment(event.start).format("DD-MM-YYYY");
+console.log(documento);
+
+var hora = moment(event.start).format("HH:mm");
+console.log(hora);
+var dow = moment(event.start).weekday();
+var dia = fechas(dow);
+console.log(props.idfranchise);
+console.log(props.venueID);
+try {
+  let ref = firebase.firestore().collection("franchises").doc(props.idfranchise)
+  .collection("venues").doc(props.venueID).collection("availabilites")
+  .doc(documento).collection("hours").doc(hora).set({washers:event.personName},{merge: true});//delete(); 
+  // console.log(ref.docs.map(d => d.data()));
+  console.log(`se edito el registro` );
+} catch (error) {
+  console.log(`ocurrió un error` );
+}
+    // const datos = await firebase.firestore().collection("templates").doc(props.venueID).collection("hours").doc(event.id)
+    // .set({"washers":event.personName},{merge : true});
     setEvents(events => events.map(e => (e.id === event.id ? event : e)));
     setEventModal({
       open: false,
@@ -429,14 +463,7 @@ try {
     const calendarApi = calendarRef.current.getApi();
     const newView = mobileDevice ? 'timeGridWeek' : 'timeGridWeek';
 
-    // console.log(arg);
-
     var fecha = new Date(arg.dateStr);
-    // console.log(fecha);
-    // console.log(fecha.getMinutes()+30);
-    // console.log(fecha.getDate());
-    // console.log(fecha.getUTCMonth());
-    // console.log(fecha.getFullYear());
     calendarApi.changeView(newView);
     setView(newView);
     setEventModal({
@@ -473,6 +500,7 @@ try {
         onViewChange={handleViewChange}
         view={view}
       />
+      <CustomizedProgressBars percent={percent} show={show}/>
       <Card className={classes.card}>
         <CardContent>
           <FullCalendar

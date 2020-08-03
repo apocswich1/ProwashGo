@@ -125,8 +125,8 @@ console.log(props.venueID);
         body: JSON.stringify(params)
       }).then(function (respuesta) {
         respuesta.json().then(body => {
-          setWashers(body.usuarios);
-          setWashersBkp(body.usuarios);
+          setWashers(body.usuarios.filter(item => item.deleted != true ));
+          setWashersBkp(body.usuarios.filter(item => item.deleted != true ));
           console.log(body.usuarios);
           setLoading(false);
         });
@@ -173,8 +173,8 @@ console.log(props.venueID);
         body: JSON.stringify(params)
       }).then(function (respuesta) {
         respuesta.json().then(body => {
-          setWashers(body.usuarios);
-          setWashersBkp(body.usuarios);
+          setWashers(body.usuarios.filter(item => item.deleted !== true));
+          setWashersBkp(body.usuarios.filter(item => item.deleted !== true));
           console.log(body.usuarios);
          
         if(bodyres){

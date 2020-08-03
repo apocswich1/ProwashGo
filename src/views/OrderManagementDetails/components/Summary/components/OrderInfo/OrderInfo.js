@@ -67,7 +67,7 @@ const OrderInfo = props => {
       }).then(function (respuesta) {
         respuesta.json().then(body => {
           //setWashers(body.usuarios);
-          setWashers(body.usuarios.filter(item => item.venueID == order.venueID));
+          setWashers(body.usuarios.filter(item => item.venueID == order.venueID && item.deleted !== true));
           console.log(body.usuarios);
           console.log(order);
         });

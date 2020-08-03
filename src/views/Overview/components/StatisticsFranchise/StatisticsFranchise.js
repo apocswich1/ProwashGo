@@ -169,7 +169,7 @@ const StatisticsFranchise = props => {
         let datosFranchise = franchises.docs.map(d => { return d.data() });
         let washers = await firebase.firestore().collection('washers').where("franchiseID", "==", datosFranchise[0].id).get();
         let datosWashers = washers.docs.map(d => { return d.data() });
-        setUsers(datosWashers);
+        setUsers(datosWashers.filter(item => item.deleted !== true));
       } catch (error) {
         console.log(error);
       }
@@ -211,7 +211,7 @@ const StatisticsFranchise = props => {
       }).then(function (respuesta) {
         respuesta.json().then(body => {
           console.log(body.usuarios);
-          setUsers(body.usuarios);
+          setUsers(body.usuarios.filter(item => item.deleted !== true));
         });
       }).catch(function (err) {
         // Error :(
@@ -225,7 +225,7 @@ const StatisticsFranchise = props => {
       }).then(function (respuesta) {
         respuesta.json().then(body => {
           console.log(body.usuarios);
-          setOrders(body.usuarios);
+          setOrders(body.usuarios.filter(item => item.deleted !== true));
         });
       }).catch(function (err) {
         // Error :(

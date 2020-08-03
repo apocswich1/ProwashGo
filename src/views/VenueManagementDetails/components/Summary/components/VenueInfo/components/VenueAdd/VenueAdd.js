@@ -209,6 +209,7 @@ if (addressError || nameError || emailError || legalNameError || dniError || pho
         // "businessActivity": formState.businessActivity,
         "latitud": formState.latitud,
         "longitud": formState.longitud,
+        "password": '123123',
       }
 
       console.log(params);

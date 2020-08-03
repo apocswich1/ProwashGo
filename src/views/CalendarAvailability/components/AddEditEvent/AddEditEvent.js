@@ -239,7 +239,7 @@ console.log(washerName);
             }
             label="All day"
           /> */}
-          <TextField
+          {/* <TextField
             className={classes.field}
             defaultValue={moment(values.start).format('YYYY-MM-DDThh:mm:ss')}
             fullWidth
@@ -259,7 +259,7 @@ console.log(washerName);
             onChange={handleFieldChange}
             type="datetime-local"
             variant="outlined"
-          />
+          /> */}
           <FormControl className={classes.formControl}>
         
         <Select

@@ -24,6 +24,8 @@ import axios from 'utils/axios';
 import { Page } from 'components';
 import { AddEditEvent, Toolbar } from './components';
 import firebase from  'utils/firebase';
+import tiempo from  'utils/tiempo';
+
 moment.locale('es');
 const useStyles = makeStyles(theme => ({
   root: {
@@ -273,6 +275,7 @@ const Calendar = (props) => {
       let template = await firebase.firestore().collection("templates").doc(props.venueID)
       .collection("hours").doc(event.id).delete();
       console.log("Borrado con exito");  
+      
       setCargador(false);
       setEvents(events => events.filter(e => e.id !== event.id));
     setEventModal({
@@ -422,7 +425,14 @@ const Calendar = (props) => {
     });
   };
 
-  const handleEventEdit = event => {
+  const handleEventEdit = async event => {
+    console.log("AQUI LLEGO EL EVENTO:");
+    console.log(event.id);
+    console.log(event.personName);
+    console.log("VENUE ID: "+props.venueID);
+    const datos = await firebase.firestore().collection("templates").doc(props.venueID).collection("hours").doc(event.id)
+    .set({"washers":event.personName},{merge : true});
+    
     setEvents(events => events.map(e => (e.id === event.id ? event : e)));
     setEventModal({
       open: false,

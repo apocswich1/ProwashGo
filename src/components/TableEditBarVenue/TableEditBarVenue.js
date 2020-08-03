@@ -6,6 +6,7 @@ import { Drawer, Grid, Typography, Button, Hidden } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
 import DeleteIcon from '@material-ui/icons/DeleteOutline';
+import firebase from 'utils/firebase';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -39,91 +40,114 @@ const TableEditBar = props => {
   const open = selected.length > 0;
 
 
-  const handleDelete = ()=>{
-    //console.log(params);
-    let params = { 
-      "id":selected[0]
-    }
-    let msg = "Franquicia eliminada exitosamente!";
-    console.log(params);
-    fetch('https://us-central1-prowashgo-firebase.cloudfunctions.net/venueDeleteAdmin', {
-        method: 'post',
-        mode: 'cors',
-        body: JSON.stringify(params)
-      }).then(function (respuesta) {
-        respuesta.json().then(body => {
-          console.log(body);
-          actualizar(msg,body);
-        });
-      }).catch(function (err) {
-        // Error :(
+  const handleDelete = async () => {
+    let params = { "id": selected[0] }
+    let msg = "Eliminada con exito";
+    let body = {code : 200, msg: "Eliminada con exito"};
+    let bodyError = {code : 500, msg: "Ocurrio un error"};
+    let ref = await firebase.firestore().collection('franchises').get();
+    let Franquicias = await ref.docs.map(item => { return item.data() });
+    Franquicias.forEach(async item => {
+      let refVenues = await firebase.firestore().collection('franchises').doc(item.id).collection('venues').get();
+      let Venues = await refVenues.docs.map(item => { return item.data() });
+      Venues.forEach(async element => {
+        if(element.id == selected[0]){
+          console.log("Franquicia: "+item.id)  
+          console.log("Sucursal: "+element.id)
+          try {
+            let result = await firebase.firestore().collection('franchises').doc(item.id)
+            .collection('venues').doc(element.id).set({deleted: true},{merge:true});
+            actualizar(msg, body);
+          } catch (error) {
+            console.log(error);
+            actualizar(error, bodyError);
+          }
+        }
+        
       });
+    })
+
+    // return;
+    // let msg = "Franquicia eliminada exitosamente!";
+    // console.log(params);
+    // fetch('https://us-central1-prowashgo-firebase.cloudfunctions.net/venueDeleteAdmin', {
+    //   method: 'post',
+    //   mode: 'cors',
+    //   body: JSON.stringify(params)
+    // }).then(function (respuesta) {
+    //   respuesta.json().then(body => {
+    //     console.log(body);
+    //     actualizar(msg, body);
+    //   });
+    // }).catch(function (err) {
+    //   // Error :(
+    // });
   }
 
-  const handleStatus = (status)=>{
+  const handleStatus = (status) => {
     //console.log(params);
-    let params = { 
-      "id":selected[0],
-      "isActive":status
+    let params = {
+      "id": selected[0],
+      "isActive": status
     }
     let msg = "Status modificado exitosamente!";
     console.log(params);
     fetch('https://us-central1-prowashgo-firebase.cloudfunctions.net/venueStatusAdmin', {
-        method: 'post',
-        mode: 'cors',
-        body: JSON.stringify(params)
-      }).then(function (respuesta) {
-        respuesta.json().then(body => {
-          console.log(body);
-          actualizar(msg,body);
-        });
-      }).catch(function (err) {
-        // Error :(
+      method: 'post',
+      mode: 'cors',
+      body: JSON.stringify(params)
+    }).then(function (respuesta) {
+      respuesta.json().then(body => {
+        console.log(body);
+        actualizar(msg, body);
       });
+    }).catch(function (err) {
+      // Error :(
+    });
   }
 
-  const handleActive = (status)=>{
+  const handleActive = (status) => {
     //console.log(params);
-    let params = { 
-      id:selected[0],
-      isActive:true
+    let params = {
+      id: selected[0],
+      isActive: true
     }
     let msg = "Status modificado exitosamente!";
     console.log(params);
     fetch('https://us-central1-prowashgo-firebase.cloudfunctions.net/venueStatusAdmin', {
-        method: 'post',
-        mode: 'cors',
-        body: JSON.stringify(params)
-      }).then(function (respuesta) {
-        respuesta.json().then(body => {
-          console.log(body);
-          actualizar(msg,body);
-        });
-      }).catch(function (err) {
-        // Error :(
+      method: 'post',
+      mode: 'cors',
+      body: JSON.stringify(params)
+    }).then(function (respuesta) {
+      respuesta.json().then(body => {
+        console.log(body);
+        actualizar(msg, body);
       });
+    }).catch(function (err) {
+      // Error :(
+    });
   }
 
-  const handleDeactive = (status)=>{
+  const handleDeactive = (status) => {
     //console.log(params);
-    let params = { 
-      id:selected[0],
-      isActive:false
+    let params = {
+      id: selected[0],
+      isActive: false
     }
     let msg = "Status modificado exitosamente!";
     console.log(params);
     fetch('https://us-central1-prowashgo-firebase.cloudfunctions.net/venueStatusAdmin', {
-        method: 'post',
-        mode: 'cors',
-        body: JSON.stringify(params)
-      }).then(function (respuesta) {
-        respuesta.json().then(body => {
-          console.log(body);
-          actualizar(msg,body);
-        });
-      }).catch(function (err) {
-        // Error :(
+      method: 'post',
+      mode: 'cors',
+      body: JSON.stringify(params)
+    }).then(function (respuesta) {
+      respuesta.json().then(body => {
+        console.log(body);
+        actualizar(msg, body);
       });
+    }).catch(function (err) {
+      // Error :(
+    });
   }
 
   return (
@@ -176,11 +200,11 @@ const TableEditBar = props => {
                 <DeleteIcon className={classes.buttonIcon} />
                 Delete
               </Button>
-              <Button onClick={()=>handleStatus(true)}>
+              <Button onClick={() => handleStatus(true)}>
                 <CheckIcon className={classes.buttonIcon} />
                 Active
               </Button>
-              <Button onClick={()=>handleStatus(false)}>
+              <Button onClick={() => handleStatus(false)}>
                 <CloseIcon className={classes.buttonIcon} />
                 Deactive
               </Button>

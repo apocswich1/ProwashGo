@@ -117,8 +117,8 @@ console.log(data);
           body: JSON.stringify({ 'id':props.id }),
       }).then(function (respuesta) {
         respuesta.json().then(body => {
-          setVenues(body.data);
-          setVenuesBkp(body.data);
+          setVenues(body.data.filter(item => item.deleted !== true));
+          setVenuesBkp(body.data.filter(item => item.deleted !== true));
           console.log(body.data);
           setLoading(false);
         });
@@ -147,8 +147,8 @@ console.log(data);
       body: JSON.stringify({ 'id':props.id }),
   }).then(function (respuesta) {
     respuesta.json().then(body => {
-          setVenues(body.data);
-          setVenuesBkp(body.data);
+          setVenues(body.data.filter(item => item.deleted !== true));
+          setVenuesBkp(body.data.filter(item => item.deleted !== true));
           console.log(body.data);
          
         if(bodyres){

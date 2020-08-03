@@ -121,11 +121,11 @@ console.log(data);
         respuesta.json().then(body => {
 
           if(role !== "ADMIN"){
-            setFranchises(body.usuarios.filter(item => item.id == session.user.id));
-            setFranchisesBkp(body.usuarios.filter(item => item.id == session.user.id));
+            setFranchises(body.usuarios.filter(item => item.id == session.user.id && item.deleted !== true));
+            setFranchisesBkp(body.usuarios.filter(item => item.id == session.user.id && item.deleted !== true));
           }else {
-            setFranchises(body.usuarios);
-            setFranchisesBkp(body.usuarios);
+            setFranchises(body.usuarios.filter(item => item.deleted !== true));
+            setFranchisesBkp(body.usuarios.filter(item => item.deleted !== true));
           }
 
           setLoading(false);
@@ -155,11 +155,11 @@ console.log(data);
       }).then(function (respuesta) {
         respuesta.json().then(body => {
           if(role !== "ADMIN"){
-            setFranchises(body.usuarios.filter(item => item.id == session.user.id));
-            setFranchisesBkp(body.usuarios.filter(item => item.id == session.user.id));
+            setFranchises(body.usuarios.filter(item => item.id == session.user.id && item.deleted !== true));
+            setFranchisesBkp(body.usuarios.filter(item => item.id == session.user.id && item.deleted !== true));
           }else {
-            setFranchises(body.usuarios);
-            setFranchisesBkp(body.usuarios);
+            setFranchises(body.usuarios.filter(item => item.deleted !== true));
+            setFranchisesBkp(body.usuarios.filter(item => item.deleted !== true));
           }
 
           //console.log(body.usuarios);

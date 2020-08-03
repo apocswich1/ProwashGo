@@ -65,8 +65,8 @@ const MapaInfo = props => {
         mode: 'cors',
       }).then(function (respuesta) {
         respuesta.json().then(body => {
-          setWashers(body.usuarios);
-          console.log(body.usuarios);
+          setWashers(body.usuarios.filter(item => item.deleted !== true));
+          console.log(body.usuarios.filter(item => item.deleted !== true));
         });
       }).catch(function (err) {
         // Error :(

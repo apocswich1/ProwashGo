@@ -32,3 +32,4 @@ export { default as TableEditBarOrder } from './TableEditBarOrder';
 export { default as Template } from './Template';
 export { default as Marker } from './Marker';
 export { default as Mapa } from './Mapa';
+export { default as CustomizedProgressBars } from './CustomizedProgressBars';

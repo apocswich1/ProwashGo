@@ -127,9 +127,9 @@ console.log(data);
         mode: 'cors',
       }).then(function (respuesta) {
         respuesta.json().then(body => {
-          setCustomers(body.usuarios);
-          setCustomersBkp(body.usuarios);
-          console.log(body.usuarios);
+          setCustomers(body.usuarios.filter(item => item.deleted !== true));
+          setCustomersBkp(body.usuarios.filter(item => item.deleted !== true));
+          console.log(body.usuarios.filter(item => item.deleted !== true));
           setLoading(false);
         });
       }).catch(function (err) {
@@ -156,9 +156,9 @@ console.log(data);
         mode: 'cors',
       }).then(function (respuesta) {
         respuesta.json().then(body => {
-          setCustomers(body.usuarios);
-          setCustomersBkp(body.usuarios);
-          console.log(body.usuarios);
+          setCustomers(body.usuarios.filter(item => item.deleted !== true));
+          setCustomersBkp(body.usuarios.filter(item => item.deleted !== true));
+          console.log(body.usuarios.filter(item => item.deleted !== true));
          
         if(bodyres){
           if(res.code === 200){

@@ -189,6 +189,7 @@ const AddEditEvent = forwardRef((props, ref) => {
 
   const handleEdit = () => {
     console.log(values);
+    console.log(personName);
     if (!values.title || !values.desc) {
       return;
     }
@@ -240,7 +241,7 @@ const AddEditEvent = forwardRef((props, ref) => {
             }
             label="All day"
           /> */}
-          <TextField
+          {/* <TextField
             className={classes.field}
             defaultValue={moment(values.start).format('YYYY-MM-DDThh:mm:ss')}
             fullWidth
@@ -260,7 +261,7 @@ const AddEditEvent = forwardRef((props, ref) => {
             onChange={handleFieldChange}
             type="datetime-local"
             variant="outlined"
-          />
+          /> */}
           <FormControl className={classes.formControl}>
         
         <Select

@@ -183,6 +183,7 @@ const WasherManagementList = () => {
             setWashers(usuarios.filter(item => item.franchiseID == session.user.id && item.deleted !== true));
             setWashersBkp(usuarios.filter(item => item.franchiseID == session.user.id && item.deleted !== true));
           } else {
+            console.log("uso este condicional");
             setWashers(usuarios.filter(item => item.deleted !== true));
             setWashersBkp(usuarios.filter(item => item.deleted !== true));
           }
